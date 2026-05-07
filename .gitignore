@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+venv/
+env/
+.venv/
+
+# Models (too large for GitHub, generated at runtime)
+*.json
+*.pt
+*.pkl
+*.joblib
+
+# Data
+*.csv
+*.parquet
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
