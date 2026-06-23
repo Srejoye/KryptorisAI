@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title> KryptorisAI — Live Security Dashboard </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <!-- Background visual effects -->
+    <div class="noise-overlay"></div>
+    <div class="bg-glow"></div>
+
+    <!-- Hero section: system overview and live status -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          IDRS
+        </div>
+        <h1 class="hero-title"> KryptorisAI </h1>
+        <p class="hero-sub"> Detect. Analyze. Respond. Real-time intrusion detection and response powered by advanced ML — identifying anomalies, classifying threats and neutralizing attacks instantly. </p>
+        <div class="hero-actions">
+          <div id="statusBadge" class="badge badge-gray"> ⏳ Initializing </div>
+          <span id="scenarioLabel" class="scenario-tag"> Idle </span>
+        </div>
+        <div class="stat-pills">
+          <div class="pill">
+            <span class="pill-val" id="rpsValue"> 0 </span>
+            <span class="pill-label"> req/sec </span>
+          </div>
+          <div class="pill">
+            <span class="pill-val" id="riskScore" style="color:var(--green)"> 0.000 </span>
+            <span class="pill-label"> risk score </span>
+          </div>
+          <div class="pill">
+            <span class="pill-val" id="classLabel"> — </span>
+            <span class="pill-label"> classification </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="orb-container">
+          <div class="orb-rings">
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+          </div>
+          <div class="orb-core">
+            <div class="orb-inner">
+              <div class="orb-eye"></div>
+              <div class="orb-pulse"></div>
+            </div>
+            <div class="orb-glow"></div>
+          </div>
+          <div class="orb-particles">
+            <div class="particle p1"></div>
+            <div class="particle p2"></div>
+            <div class="particle p3"></div>
+            <div class="particle p4"></div>
+            <div class="particle p5"></div>
+          </div>
+        </div>
+        
+        <div class="float-card fc-top">
+          <div class="fc-icon">🔬</div>
+          <div>
+            <div class="fc-val" id="xgbProb">0.000</div>
+            <div class="fc-label">XGB Prob</div>
+          </div>
+        </div>
+        <div class="float-card fc-bottom">
+          <div class="fc-icon">🧠</div>
+          <div>
+            <div class="fc-val" id="lstmProb">0.000</div>
+            <div class="fc-label">LSTM Prob</div>
+          </div>
+        </div>
+        <div class="float-card fc-left">
+          <div class="fc-icon">📡</div>
+          <div>
+            <div class="fc-val" id="anomalyScore">0.000</div>
+            <div class="fc-label">Anomaly</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Real-time charts -->
+    <div class="content-grid">
+      <div class="chart-card premium-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon"> 📡 </span>
+            <span class="card-title"> Requests Per Second </span>
+          </div>
+          <div class="card-badge live-badge"> ● LIVE </div>
+        </div>
+        <canvas id="rpsChart"></canvas>
+      </div>
+      <div class="chart-card premium-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon"> 🎯 </span>
+            <span class="card-title"> Risk Score Timeline </span>
+          </div>
+          <div class="card-badge live-badge"> ● LIVE </div>
+        </div>
+        <canvas id="riskChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Model insights and alert monitoring -->
+    <div class="content-grid three-col">
+      <div class="premium-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon"> 🔬 </span>
+            <span class="card-title"> Feature Vector </span>
+          </div>
+        </div>
+        <table id="featureTable" class="feat-table">
+          <thead><tr><th> Feature </th><th> Value </th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="premium-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon"> 🧠 </span>
+            <span class="card-title"> SHAP Attribution </span>
+          </div>
+        </div>
+        <div id="shapBars"></div>
+      </div>
+      <div class="premium-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon"> 🚨 </span>
+            <span class="card-title"> Alert Log </span>
+          </div>
+        </div>
+        <div id="alertLog" class="alert-log"></div>
+      </div>
+    </div>
+
+    <!-- Security control: blocked and pending IP actions -->
+    <div class="content-grid two-col-wide">
+      <div class="premium-card panel-wide">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon"> 🔒 </span>
+            <span class="card-title"> Blocked / Rate-Limited IPs </span>
+          </div>
+        </div>
+        <table id="ipTable" class="ip-table">
+          <thead><tr><th> IP Address </th><th> Status </th><th> Risk </th><th> Action </th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="card-header" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border-soft)">
+          <div class="card-title-group">
+            <span class="card-icon"> ⏳ </span>
+            <span class="card-title" style="color:var(--amber)"> Pending Admin Approval </span>
+          </div>
+        </div>
+        <table id="pendingTable" class="ip-table">
+          <thead><tr><th> IP Address </th><th> Risk </th><th> Time </th><th> Action </th></tr></thead>
+          <tbody><tr><td colspan="4" class="empty-row"> No pending approvals </td></tr></tbody>
+        </table>
+      </div>
+      <div class="premium-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon"> 📜 </span>
+            <span class="card-title"> Live Log Feed </span>
+          </div>
+        </div>
+        <div id="logFeed" class="log-feed"></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
